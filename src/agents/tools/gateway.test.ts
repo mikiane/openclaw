@@ -328,6 +328,7 @@ describe("gateway tool defaults", () => {
     expect(call.method).toBe("cron.remove");
     expect(call.params).toEqual({ id: "job-1" });
     expect(call).not.toHaveProperty("agentRuntimeIdentityToken");
+    expect(call).not.toHaveProperty("deviceIdentity");
   });
 
   it("marks local cron calls from trusted tool context with agent runtime identity", async () => {
@@ -344,6 +345,7 @@ describe("gateway tool defaults", () => {
     expect(call.method).toBe("cron.remove");
     expect(call.params).toEqual({ id: "job-1" });
     expect(call.agentRuntimeIdentityToken).toEqual(expect.any(String));
+    expect(call.deviceIdentity).toBeNull();
   });
 
   it("marks local wake calls from trusted tool context with agent runtime identity", async () => {
@@ -359,6 +361,7 @@ describe("gateway tool defaults", () => {
     const call = capturedGatewayCall();
     expect(call.method).toBe("wake");
     expect(call.agentRuntimeIdentityToken).toEqual(expect.any(String));
+    expect(call.deviceIdentity).toBeNull();
   });
 
   it("explains stale gateway cron connection metadata rejections", async () => {

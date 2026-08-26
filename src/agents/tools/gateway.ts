@@ -350,6 +350,7 @@ export async function callGatewayTool<T = Record<string, unknown>>(
     opts,
     target: gateway.target,
   });
+  const gatewayDeviceIdentity = agentRuntimeIdentityToken ? null : deviceIdentity;
   try {
     return await callGateway<T>({
       url: gateway.url,
@@ -363,7 +364,9 @@ export async function callGatewayTool<T = Record<string, unknown>>(
       mode: GATEWAY_CLIENT_MODES.BACKEND,
       ...(approvalRuntimeToken ? { approvalRuntimeToken } : {}),
       ...(agentRuntimeIdentityToken ? { agentRuntimeIdentityToken } : {}),
-      ...(deviceIdentity ? { deviceIdentity } : {}),
+      // The signed local runtime token is the agent's connection identity. Pairing it
+      // with the shared device would re-enter paired-scope checks before token validation.
+      ...(gatewayDeviceIdentity !== undefined ? { deviceIdentity: gatewayDeviceIdentity } : {}),
       scopes,
     });
   } catch (error) {
